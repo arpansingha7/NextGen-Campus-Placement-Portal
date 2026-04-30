@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- headar -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <h2 class="mb-0 fw-bold text-primary"><i class="bi bi-building me-2"></i>{{ company.company_name }}</h2>
+        <div>
+            <a href="{{ url_for('student_applications') }}" class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-clock-history me-1"></i>History</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-danger"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
+        </div>
+    </div>
+
+    <div class="mb-5 bg-transparent p-4 rounded-3 shadow-sm border border-secondary">
+        <h4 class="text-white mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Overview</h4>
+        <p class="text-muted" style="line-height: 1.6;">
+            extensive opportunities to deliver transformative outcomes that benefit society at
+            large and prove that anything is possible.
+            <br><br>
+            <strong><i class="bi bi-tag-fill text-muted me-1"></i>Industry:</strong> <span class="fw-medium text-white">{{ company.industry }}</span> <br>
+            <strong><i class="bi bi-globe text-muted me-1"></i>Website:</strong> {% if company.website %}<a href="{{ company.website }}" target="_blank" class="text-primary fw-medium text-decoration-none">{{
+                company.website }} <i class="bi bi-box-arrow-up-right ms-1 small"></i></a>{% else %}<span class="text-muted fw-medium">N/A</span>{% endif %}
+        </p>
+    </div>
+</div>
+
+<!-- currents drives -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-transparent">
+        <h5 class="mb-0 text-primary"><i class="bi bi-megahone-fill me-2"></i>Current Drives</h5>
+    </div>
+    <div class="list-group list-group-flush">
+        {% for drive in company.drives %}
+        {% if drive.status == 'approved' and drive.is_active %}
+        <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+            <span class="fs-6 fw-medium text-white"><i class="bi bi-briefcase text-muted me-2"></i>{{ drive.job_title }}</span>
+            <a href="{{ url_for('student_drive_details', drive_id=drive.id) }}"
+                class="btn btn-sm btn-outline-primary rounded-pill px-4"><i class="bi bi-info-circle me-1"></i>View Details</a>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="list-group-item text-muted text-center py-4">No active drives from this company.</div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="mt-4 mb-5 pb-5">
+    <a href="{{ url_for('student_dashboard') }}" class="btn btn-outline-secondary rounded-pill px-4"><i class="bi bi-arrow-left me-1"></i>Go Back</a>
+</div>
+
+</div>
+{% endblock %}

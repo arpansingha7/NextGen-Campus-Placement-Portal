@@ -1,0 +1,29 @@
+#ignroe Python cache files
+__pycache__/
+*.pyc
+
+#ignore virtual environment
+venv/
+
+#ignroe environment variables
+.env
+
+#ignore system files
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+# Ignore Unnecessary/University Files
+*.csv
+*.mp4
+*.pdf
+*.png
+*.docx
+viva_prep_guide.md.resolved
+MAD 1 Level 2 Viva Questions (Responses) - Form Responses 1.csv
+Placement portal schema .png
+placement-portal-wireframe.png
+project_report.pdf
+video_report.mp4
+static/uploads/*

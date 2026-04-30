@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextGen Campus Placement Portal</title>
+    <!-- botstrap css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 90px;
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- navigations bars -->
+    <nav class="navbar navbar-expand-lg navbar-dark custom-navbar fixed-top py-3">
+        <div class="container">
+            <a class="navbar-brand fs-4" href="{{ url_for('index') }}">NextGen Campus</a>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto gap-2 align-items-center">
+                    {% if current_user.is_authenticated %}
+                    {% if current_user.role == 'admin' %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_dashboard') }}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                    </li>
+                    {% elif current_user.role == 'company' %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('company_dashboard') }}"><i class="bi bi-building"></i> Dashboard</a></li>
+                    {% elif current_user.role == 'student' %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('student_dashboard') }}"><i class="bi bi-mortarboard"></i> Dashboard</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="{{ url_for('student_notifications') }}">
+                            <i class="bi bi-bell"></i>
+                            {% set unread_count = current_user.notifications|selectattr('is_read', 'equalto',
+                            false)|list|length %}
+                            {% if unread_count > 0 %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65em;">
+                                {{ unread_count }}
+                            </span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item ms-3"><a class="btn btn-outline-secondary btn-sm px-3" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="btn btn-outline-info btn-sm px-3 mt-1 mt-lg-0" href="{{ url_for('login') }}">Login</a></li>
+                    <li class="nav-item ms-lg-2"><a class="btn btn-outline-light btn-sm px-3 mt-2 mt-lg-0" href="{{ url_for('register_student') }}">Student Registration</a></li>
+                    <li class="nav-item ms-lg-2"><a class="btn btn-primary btn-sm px-3 mt-2 mt-lg-0" href="{{ url_for('register_company') }}">Company Registration</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- main contents -->
+    <div class="container main-content fade-in">
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm border-0" role="alert" style="background: var(--glass-bg); backdrop-filter: blur(10px); color: var(--text-main);">
+                {{ message }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

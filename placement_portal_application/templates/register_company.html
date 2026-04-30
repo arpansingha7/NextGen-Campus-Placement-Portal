@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center min-vh-100" style="margin-top: -90px; padding-top: 90px;">
+    <div class="col-md-8 col-lg-7 delay-1">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header border-bottom-0 text-center pt-4 pb-2">
+                <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle mb-3 shadow-sm" style="background: rgba(14, 165, 233, 0.1); color: #38bdf8;">
+                    <i class="bi bi-briefcase fs-1"></i>
+                </div>
+                <h3 class="fw-bold text-white mb-1">Company Partner Registration</h3>
+                <p class="text-muted small">Join NextGen Campus to hire top-tier talent</p>
+            </div>
+            <div class="card-body p-4 p-md-5 pt-2">
+                
+                <div class="alert text-center mb-4 border-0" style="background: rgba(245, 158, 11, 0.1); color: #fbbf24; border-radius: 10px;">
+                    <i class="bi bi-info-circle me-2"></i> Note: Company accounts require Admin approval before accessing the platform.
+                </div>
+
+                <form action="{{ url_for('register_company') }}" method="POST">
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-4 mb-md-0">
+                            <label for="company_name" class="form-label">Company Name</label>
+                            <input type="text" class="form-control bg-transparent" id="company_name" name="company_name" placeholder="Acme Corp" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="industry" class="form-label">Industry</label>
+                            <input type="text" class="form-control bg-transparent" id="industry" name="industry" placeholder="Technology" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-4 mb-md-0">
+                            <label for="website" class="form-label">Company Website</label>
+                            <input type="url" class="form-control bg-transparent" id="website" name="website" placeholder="https://example.com" pattern="^https?://[^\s/$.?#].[^\s]*$" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="hr_contact" class="form-label">HR Contact Name</label>
+                            <input type="text" class="form-control bg-transparent" id="hr_contact" name="hr_contact" placeholder="Jane Doe" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-4 mb-md-0">
+                            <label for="email" class="form-label">HR Email Address</label>
+                            <input type="email" class="form-control bg-transparent" id="email" name="email" placeholder="jane.doe@acme.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control bg-transparent" id="password" name="password" minlength="6" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-5">
+                        <button type="submit" class="btn btn-outline-info btn-lg shadow-sm">Submit Partner Request <i class="bi bi-arrow-right ms-2"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

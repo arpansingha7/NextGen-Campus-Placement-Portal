@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-2 mb-4">
+        <div class="list-group">
+            <a href="{{ url_for('admin_dashboard') }}" class="list-group-item list-group-item-action">Dashboard</a>
+            <a href="{{ url_for('admin_companies') }}" class="list-group-item list-group-item-action">Manage Companies</a>
+            <a href="{{ url_for('admin_students') }}" class="list-group-item list-group-item-action active">Manage Students</a>
+            <a href="{{ url_for('admin_drives') }}" class="list-group-item list-group-item-action">Placement Drives</a>
+            <a href="{{ url_for('admin_applications') }}" class="list-group-item list-group-item-action">All Applications</a>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Student Details: {{ student.name }}</h2>
+            <a href="{{ url_for('admin_students') }}" class="btn btn-outline-secondary">Back to Students</a>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-transparent border-bottom">
+                        <h5 class="mb-0">Profile Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Name:</strong> {{ student.name }}</p>
+                        <p><strong>Roll ID:</strong> {{ student.student_roll_id }}</p>
+                        <p><strong>Email:</strong> {{ student.user.email }}</p>
+                        <p><strong>Contact:</strong> {{ student.contact }}</p>
+                        {% if student.resume_filename %}
+                        <p><strong>Resume:</strong> <a
+                                href="{{ url_for('download_file', filename=student.resume_filename) }}"
+                                target="_blank">View Resume</a></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-transparent border-bottom">
+                        <h5 class="mb-0">Background & Skills</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if student.education %}
+                        <h6>Education</h6>
+                        <p class="text-muted">{{ student.education }}</p>
+                        {% endif %}
+                        <h6>Skills</h6>
+                        <p class="text-muted">{{ student.skills or 'Not provided' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h4>Application History</h4>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle shadow-sm bg-transparent rounded">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Company</th>
+                        <th>Job Role</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in student.applications|sort(attribute='application_date', reverse=True) %}
+                    <tr>
+                        <td>{{ app.application_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>{{ app.drive.company.company_name }}</td>
+                        <td>{{ app.drive.job_title }}</td>
+                        <td>
+                            {% if app.status == 'applied' %}
+                            <span class="badge bg-secondary">Applied</span>
+                            {% elif app.status == 'shortlisted' %}
+                            <span class="badge bg-info">Shortlisted</span>
+                            {% elif app.status == 'interview' %}
+                            <span class="badge bg-warning text-white">Interview</span>
+                            {% elif app.status == 'selected' %}
+                            <span class="badge bg-success">Selected</span>
+                            {% elif app.status == 'placed' %}
+                            <span class="badge bg-success">Placed</span>
+                            {% elif app.status == 'rejected' %}
+                            <span class="badge bg-danger">Rejected</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ app.status|title }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-3">No applications found for this student.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

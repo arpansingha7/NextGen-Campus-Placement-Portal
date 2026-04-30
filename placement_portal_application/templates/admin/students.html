@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-2 mb-4">
+        <div class="list-group">
+            <a href="{{ url_for('admin_dashboard') }}" class="list-group-item list-group-item-action">Dashboard</a>
+            <a href="{{ url_for('admin_companies') }}" class="list-group-item list-group-item-action">Manage
+                Companies</a>
+            <a href="{{ url_for('admin_students') }}" class="list-group-item list-group-item-action active">Manage
+                Students</a>
+            <a href="{{ url_for('admin_drives') }}" class="list-group-item list-group-item-action">Placement Drives</a>
+            <a href="{{ url_for('admin_applications') }}" class="list-group-item list-group-item-action">All
+                Applications</a>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <h2 class="mb-4">Manage Students</h2>
+
+        <form action="{{ url_for('admin_students') }}" method="GET" class="mb-4">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search by name, ID, or contact number..." name="q"
+                    value="{{ query }}">
+                <button class="btn btn-outline-primary" type="submit">Search</button>
+                {% if query %}
+                <a href="{{ url_for('admin_students') }}" class="btn btn-outline-secondary">Clear</a>
+                {% endif %}
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.student_roll_id }}</td>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.user.email }}</td>
+                        <td>{{ student.contact }}</td>
+                        <td>
+                            {% if student.user.is_active %}
+                            <span class="badge bg-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-danger">Blacklisted</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{{ url_for('toggle_user_status', user_id=student.user.id) }}" method="POST">
+                                <button type="submit"
+                                    class="btn btn-sm {{ 'btn-warning' if student.user.is_active else 'btn-info' }}">
+                                    {{ 'Blacklist' if student.user.is_active else 'Re-activate' }}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center">No students found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

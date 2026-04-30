@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-2 mb-4">
+        <div class="list-group">
+            <a href="{{ url_for('admin_dashboard') }}" class="list-group-item list-group-item-action">Dashboard</a>
+            <a href="{{ url_for('admin_companies') }}" class="list-group-item list-group-item-action active">Manage
+                Companies</a>
+            <a href="{{ url_for('admin_students') }}" class="list-group-item list-group-item-action">Manage Students</a>
+            <a href="{{ url_for('admin_drives') }}" class="list-group-item list-group-item-action">Placement Drives</a>
+            <a href="{{ url_for('admin_applications') }}" class="list-group-item list-group-item-action">All
+                Applications</a>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Manage Companies</h2>
+            <form action="{{ url_for('admin_companies') }}" method="GET" class="d-flex w-50">
+                <input class="form-control me-2" type="search" name="q" placeholder="Search by name or industry"
+                    aria-label="Search" value="{{ query if query }}">
+                <button class="btn btn-outline-dark" type="submit">Search</button>
+                {% if query %}
+                <a href="{{ url_for('admin_companies') }}" class="btn btn-outline-secondary ms-2">Clear</a>
+                {% endif %}
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Company Name</th>
+                        <th>Industry</th>
+                        <th>HR Contact</th>
+                        <th>Website</th>
+                        <th>Email</th>
+                        <th>Approval Status</th>
+                        <th>Account Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for company in companies %}
+                    <tr>
+                        <td>{{ company.company_name }}</td>
+                        <td>{{ company.industry or 'N/A' }}</td>
+                        <td>{{ company.hr_contact }}</td>
+                        <td>
+                            {% if company.website %}
+                            <a href="{{ company.website }}" target="_blank">Link</a>
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </td>
+                        <td>{{ company.user.email }}</td>
+                        <td>
+                            {% if company.approval_status == 'pending' %}
+                            <span class="badge bg-warning text-white">Pending</span>
+                            {% elif company.approval_status == 'approved' %}
+                            <span class="badge bg-success">Approved</span>
+                            {% elif company.approval_status == 'rejected' %}
+                            <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if company.user.is_active %}
+                            <span class="badge bg-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-danger">Blacklisted</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('admin_company_details', company_id=company.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                {% if company.approval_status == 'pending' %}
+                                <form action="{{ url_for('approve_company', company_id=company.id) }}" method="POST">
+                                    <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                </form>
+                                <form action="{{ url_for('reject_company', company_id=company.id) }}" method="POST">
+                                    <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                                </form>
+                                {% endif %}
+
+                                <form action="{{ url_for('toggle_user_status', user_id=company.user.id) }}"
+                                    method="POST">
+                                    <button type="submit"
+                                        class="btn btn-sm {{ 'btn-warning' if company.user.is_active else 'btn-info' }}">
+                                        {{ 'Blacklist' if company.user.is_active else 'Re-activate' }}
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center">No companies registered yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

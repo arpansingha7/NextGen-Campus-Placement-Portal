@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <h2 class="mb-0 fw-bold text-primary"><i class="bi bi-building me-2"></i>Welcome {{ current_user.company_profile.company_name }}</h2>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
+    </div>
+
+    </div>
+
+    <!-- Company Analytics Chart -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 bg-transparent" style="backdrop-filter: blur(16px); border: 1px solid var(--glass-border) !important;">
+                <div class="card-header border-bottom border-secondary bg-transparent pt-3">
+                    <h5 class="mb-0 text-white"><i class="bi bi-bar-chart-fill me-2 text-info"></i>Application Trends</h5>
+                </div>
+                <div class="card-body">
+                    <div style="height: 300px; display: flex; justify-content: center; width: 100%;">
+                        <canvas id="companyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- upcooming drives -->
+    <div class="card mb-5 shadow-sm border-0">
+        <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 text-primary"><i class="bi bi-calendar-event me-2"></i>Upcoming Drives</h5>
+            <a href="{{ url_for('create_drive') }}" class="btn btn-sm btn-success shadow-sm"><i class="bi bi-plus-lg me-1"></i>Create Drive</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Sr No.</th>
+                            <th>Drive Name</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set ns = namespace(count=0) %}
+                        {% for drive in drives %}
+                        {% if drive.status != 'closed' %}
+                        {% set ns.count = ns.count + 1 %}
+                        <tr>
+                            <td>{{ ns.count }}.</td>
+                            <td>{{ drive.job_title }}</td>
+                            <td class="text-end">
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <a href="{{ url_for('drive_applications', drive_id=drive.id) }}"
+                                        class="btn btn-sm btn-outline-primary"><i class="bi bi-people me-1"></i>Applications</a>
+                                    <form action="{{ url_for('close_drive', drive_id=drive.id) }}" method="POST"
+                                        class="m-0 p-0">
+                                        <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-check2-circle me-1"></i>Mark Complete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        {% if ns.count == 0 %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">No upcoming drives.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- closed dirves -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-transparent">
+            <h5 class="mb-0 text-muted"><i class="bi bi-archive me-2"></i>Closed Drives</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Sr No.</th>
+                            <th>Drive Name</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set ns2 = namespace(count=0) %}
+                        {% for drive in drives %}
+                        {% if drive.status == 'closed' %}
+                        {% set ns2.count = ns2.count + 1 %}
+                        <tr>
+                            <td>{{ ns2.count }}.</td>
+                            <td>{{ drive.job_title }}</td>
+                            <td class="text-end">
+                                <a href="{{ url_for('drive_applications', drive_id=drive.id) }}"
+                                    class="btn btn-sm btn-outline-info"><i class="bi bi-pencil-square me-1"></i>Update</a>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        {% if ns2.count == 0 %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">No closed drives.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const ctx = document.getElementById('companyChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [
+                {% for drive in drives %}
+                    "{{ drive.job_title }}"{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ],
+            datasets: [{
+                label: 'Number of Applications',
+                data: [
+                    {% for drive in drives %}
+                        {{ drive.applications|length }}{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                backgroundColor: 'rgba(14, 165, 233, 0.6)',
+                borderColor: 'rgba(14, 165, 233, 1)',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        color: '#94a3b8'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#94a3b8'
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: { color: '#e2e8f0' }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

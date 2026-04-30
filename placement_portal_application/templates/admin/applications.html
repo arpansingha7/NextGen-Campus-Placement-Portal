@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-2 mb-4">
+        <div class="list-group">
+            <a href="{{ url_for('admin_dashboard') }}" class="list-group-item list-group-item-action">Dashboard</a>
+            <a href="{{ url_for('admin_companies') }}" class="list-group-item list-group-item-action">Manage
+                Companies</a>
+            <a href="{{ url_for('admin_students') }}" class="list-group-item list-group-item-action">Manage Students</a>
+            <a href="{{ url_for('admin_drives') }}" class="list-group-item list-group-item-action">Placement Drives</a>
+            <a href="{{ url_for('admin_applications') }}" class="list-group-item list-group-item-action active">All
+                Applications</a>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <h2 class="mb-4">All Applications History</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Student</th>
+                        <th>Company</th>
+                        <th>Job Title</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for application in applications %}
+                    <tr>
+                        <td>{{ application.application_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>{{ application.student.name }} <br><small class="text-muted">({{
+                                application.student.student_roll_id }})</small></td>
+                        <td>{{ application.drive.company.company_name }}</td>
+                        <td>{{ application.drive.job_title }}</td>
+                        <td>
+                            {% if application.status == 'applied' %}
+                            <span class="badge bg-primary">Applied</span>
+                            {% elif application.status == 'shortlisted' %}
+                            <span class="badge bg-info">Shortlisted</span>
+                            {% elif application.status == 'selected' %}
+                            <span class="badge bg-success">Selected</span>
+                            {% elif application.status == 'rejected' %}
+                            <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">No applications found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row align-items-center min-vh-100 pb-5" style="margin-top: -90px; padding-top: 90px;">
+    <!-- Hero Text Section -->
+    <div class="col-lg-6 text-center text-lg-start mb-5 mb-lg-0 delay-1">
+        <div class="d-inline-block px-3 py-1 mb-4 rounded-pill border" style="background: rgba(14, 165, 233, 0.1); border-color: rgba(14, 165, 233, 0.2) !important; color: var(--primary-color); font-weight: 500; letter-spacing: 1px; font-size: 0.85rem;">
+            <i class="bi bi-stars"></i> THE FUTURE OF HIRING
+        </div>
+        <h1 class="display-3 fw-bold mb-4" style="line-height: 1.1; letter-spacing: -1px;">
+            <span class="text-white">NextGen Campus</span><br>
+            <span style="background: linear-gradient(135deg, #0ea5e9, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Placement Portal</span>
+        </h1>
+        <p class="lead mb-5" style="color: var(--text-muted); max-width: 500px; font-size: 1.15rem;">
+            A unified ecosystem designed to streamline campus recruitment. Seamlessly connecting academic institutes, top-tier corporations, and emerging student talent.
+        </p>
+        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">
+            <a href="{{ url_for('register_student') }}" class="btn btn-primary btn-lg px-4 py-3 d-flex align-items-center justify-content-center gap-2 shadow-lg">
+                <i class="bi bi-rocket-takeoff"></i> Launch Career
+            </a>
+            <a href="{{ url_for('register_company') }}" class="btn btn-outline-secondary btn-lg px-4 py-3 d-flex align-items-center justify-content-center gap-2">
+                <i class="bi bi-buildings"></i> Partner with Us
+            </a>
+        </div>
+    </div>
+
+    <!-- Hero Cards Section -->
+    <div class="col-lg-6 delay-2">
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="card p-4 border-0 shadow-lg h-100" style="background: rgba(15, 23, 42, 0.6);">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="p-3 rounded-3" style="background: rgba(139, 92, 246, 0.1); color: #a78bfa;">
+                            <i class="bi bi-building fs-3"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-2 text-white">For Institutes</h4>
+                            <p class="mb-0 text-muted" style="font-size: 0.95rem;">Administer recruitment drives, approve companies, and monitor overall placement records effortlessly through a centralized command center.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-12">
+                <div class="card p-4 border-0 shadow-lg h-100" style="background: rgba(15, 23, 42, 0.6);">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="p-3 rounded-3" style="background: rgba(14, 165, 233, 0.1); color: #38bdf8;">
+                            <i class="bi bi-briefcase fs-3"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-2 text-white">For Companies</h4>
+                            <p class="mb-0 text-muted" style="font-size: 0.95rem;">Post placement drives, evaluate candidates seamlessly, and hire the brightest minds suited for your roles with precision tracking.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="card p-4 border-0 shadow-lg h-100" style="background: rgba(15, 23, 42, 0.6);">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="p-3 rounded-3" style="background: rgba(16, 185, 129, 0.1); color: #34d399;">
+                            <i class="bi bi-mortarboard fs-3"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-2 text-white">For Students</h4>
+                            <p class="mb-0 text-muted" style="font-size: 0.95rem;">Build a cinematic profile, apply to top-tier companies with one click, track your interview status, and land your dream job directly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

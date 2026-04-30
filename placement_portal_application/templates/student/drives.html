@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-2 mb-4">
+        <div class="list-group">
+            <a href="{{ url_for('student_dashboard') }}" class="list-group-item list-group-item-action">Dashboard</a>
+            <a href="{{ url_for('student_profile') }}" class="list-group-item list-group-item-action">My Profile</a>
+            <a href="{{ url_for('student_drives') }}" class="list-group-item list-group-item-action active">Placement
+                Drives</a>
+            <a href="{{ url_for('student_applications') }}" class="list-group-item list-group-item-action">My
+                Applications</a>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Available Placement Drives</h2>
+            <form class="d-flex" action="{{ url_for('student_drives') }}" method="GET">
+                <input class="form-control me-2" type="search" placeholder="Search company, role or skills..."
+                    aria-label="Search" name="q" value="{{ query or '' }}">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+
+        <div class="row">
+            {% for drive in drives %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-0 bg-transparent">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h4 class="mb-1 text-primary fw-bold">{{ drive.job_title }}</h4>
+                                <h6 class="text-muted mb-0"><i class="bi bi-building"></i> {{ drive.company.company_name
+                                    }}</h6>
+                            </div>
+                            <span
+                                class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill py-2 px-3">
+                                <i class="bi bi-calendar-event"></i> By {{ drive.application_deadline.strftime('%b %d,
+                                %Y') }}
+                            </span>
+                        </div>
+
+                        <p class="card-text text-muted mb-4">{{ drive.job_description }}</p>
+
+                        <div class="row g-2 mb-4">
+                            <div class="col-6">
+                                <div class="p-3 bg-transparent rounded border h-100">
+                                    <small class="d-block text-muted fw-bold mb-1"
+                                        style="font-size: 0.75rem; letter-spacing: 0.5px;">EXPERIENCE</small>
+                                    <span class="small fw-medium text-white"><i
+                                            class="bi bi-briefcase text-muted me-1"></i>{{ drive.experience
+                                        }}</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-transparent rounded border h-100">
+                                    <small class="d-block text-muted fw-bold mb-1"
+                                        style="font-size: 0.75rem; letter-spacing: 0.5px;">SALARY RANGE</small>
+                                    <span class="small fw-medium text-white"><i
+                                            class="bi bi-cash text-success me-1"></i>{{ drive.salary_range }}</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="p-3 bg-transparent rounded border">
+                                    <small class="d-block text-muted fw-bold mb-1"
+                                        style="font-size: 0.75rem; letter-spacing: 0.5px;">REQUIRED SKILLS</small>
+                                    <span class="small fw-medium text-white">{{ drive.required_skills }}</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="p-3 bg-transparent rounded border">
+                                    <small class="d-block text-muted fw-bold mb-1"
+                                        style="font-size: 0.75rem; letter-spacing: 0.5px;">ELIGIBILITY</small>
+                                    <span class="small fw-medium text-white">{{ drive.eligibility_criteria }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if drive.company.website %}
+                        <p class="small mb-0 text-end">
+                            <a href="{{ drive.company.website }}" target="_blank" class="text-decoration-none">
+                                <i class="bi bi-globe"></i> Visit Company Website <i
+                                    class="bi bi-box-arrow-up-right ms-1"></i>
+                            </a>
+                        </p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0 pt-0 pb-4 px-4">
+                        {% if drive.id in applied_drive_ids %}
+                        <button class="btn btn-success w-100 disabled py-2 fw-bold" type="button"><i
+                                class="bi bi-check-circle me-2"></i>Already Applied</button>
+                        {% else %}
+                        <form action="{{ url_for('apply_drive', drive_id=drive.id) }}" method="POST">
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold"
+                                onclick="return confirm('Are you sure you want to apply for this role?');">Apply
+                                Now</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <div class="alert alert-info border-0 shadow-sm">
+                    No active placement drives are currently available. Please check back later!
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

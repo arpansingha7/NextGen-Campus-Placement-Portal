@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center min-vh-100" style="margin-top: -90px; padding-top: 90px;">
+    <div class="col-md-5 col-lg-4 delay-1">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle mb-3 shadow-sm" style="background: rgba(14, 165, 233, 0.1); color: var(--primary-color);">
+                        <i class="bi bi-box-arrow-in-right fs-1"></i>
+                    </div>
+                    <h3 class="card-title fw-bold text-white mb-1">Welcome Back</h3>
+                    <p class="text-muted small">Sign in to your account</p>
+                </div>
+
+                <form action="{{ url_for('login') }}" method="POST">
+                    <div class="mb-4">
+                        <label for="email" class="form-label">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0 text-muted" style="border-color: var(--glass-border); border-radius: 10px 0 0 10px;"><i class="bi bi-envelope"></i></span>
+                            <input type="email" class="form-control border-start-0 ps-0" id="email" name="email" placeholder="name@domain.com" required style="border-radius: 0 10px 10px 0; background-color: rgba(15, 23, 42, 0.6) !important;">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0 text-muted" style="border-color: var(--glass-border); border-radius: 10px 0 0 10px;"><i class="bi bi-lock"></i></span>
+                            <input type="password" class="form-control border-start-0 ps-0" id="password" name="password" placeholder="••••••••" required style="border-radius: 0 10px 10px 0; background-color: rgba(15, 23, 42, 0.6) !important;">
+                        </div>
+                    </div>
+
+                    <div class="d-grid mb-4">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm">Sign In <i class="bi bi-arrow-right ms-2"></i></button>
+                    </div>
+                </form>
+
+                <div class="text-center border-top pt-4" style="border-color: var(--glass-border) !important;">
+                    <p class="text-muted small mb-3">Don't have an account?</p>
+                    <div class="d-flex flex-column gap-2">
+                        <a href="{{ url_for('register_student') }}" class="btn btn-outline-secondary btn-sm">Register as Student</a>
+                        <a href="{{ url_for('register_company') }}" class="btn btn-outline-secondary btn-sm">Register as Company</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

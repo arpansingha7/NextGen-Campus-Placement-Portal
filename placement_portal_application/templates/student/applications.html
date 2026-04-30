@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- heeder -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <h2 class="mb-0 fw-bold text-primary"><i class="bi bi-clock-history me-2"></i>Student Application History</h2>
+    
+        <a href="{{ url_for('student_dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3"><i class="bi bi-arrow-left me-1"></i>Back</a>
+    </div>
+
+    <div class="mb-5 bg-transparent p-4 rounded-3 shadow-sm border border-secondary">
+        <h5 class="mb-2 text-white"><i class="bi bi-person me-2 text-primary"></i>Student Name: <span class="fw-bold">{{ current_user.student_profile.name }}</span></h5>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 text-center">
+                    <thead class="table-light border-bottom border-dark">
+                        <tr>
+                            <th><i class="bi bi-hash text-muted me-1"></i>Drive No.</th>
+                            <th><i class="bi bi-building text-muted me-1"></i>Company</th>
+                            <th><i class="bi bi-briefcase text-muted me-1"></i>Job Title</th>
+                            <th><i class="bi bi-clipboard2-data text-muted me-1"></i>Results</th>
+                            <th><i class="bi bi-chat-left-text text-muted me-1"></i>Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                        <tr>
+                            <td>{{ app.drive.id }}.</td>
+                            <td class="fw-medium">{{ app.drive.company.company_name }}</td>
+                            <td>{{ app.drive.job_title }}</td>
+                            <td>
+                                {% if app.status == 'applied' %}
+                                <span class="badge bg-primary rounded-pill px-3 py-2 fw-medium"><i class="bi bi-send me-1"></i>Applied</span>
+                                {% elif app.status == 'shortlisted' %}
+                                <span class="badge bg-info text-white rounded-pill px-3 py-2 fw-medium"><i class="bi bi-star-fill me-1"></i>Shortlisted</span>
+                                {% elif app.status == 'waiting' %}
+                                <span class="badge bg-warning text-white rounded-pill px-3 py-2 fw-medium"><i class="bi bi-hourglass-split me-1"></i>Waiting</span>
+                                {% elif app.status == 'selected' %}
+                                <span class="badge bg-success rounded-pill px-3 py-2 fw-medium"><i class="bi bi-check-circle-fill me-1"></i>Selected</span>
+                                {% elif app.status == 'rejected' %}
+                                <span class="badge bg-danger rounded-pill px-3 py-2 fw-medium"><i class="bi bi-x-circle me-1"></i>Rejected</span>
+                                {% else %}
+                                <span class="badge bg-secondary rounded-pill px-3 py-2 fw-medium">{{ app.status|title }}</span>
+                                {% endif %}
+                            </td>
+                            <td>None</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="py-4 text-muted">You have no application history yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

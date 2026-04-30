@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mt-4 justify-content-center">
+    <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Create Placement Drive</h2>
+            <a href="{{ url_for('company_dashboard') }}" class="btn btn-outline-secondary">Back to Dashboard</a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form action="{{ url_for('create_drive') }}" method="POST">
+
+                    <div class="mb-3">
+                        <label for="job_title" class="form-label">Job Title</label>
+                        <input type="text" class="form-control" id="job_title" name="job_title" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="job_description" class="form-label">Job Description</label>
+                        <textarea class="form-control" id="job_description" name="job_description" rows="4"
+                            required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="eligibility_criteria" class="form-label">Eligibility Criteria</label>
+                        <textarea class="form-control" id="eligibility_criteria" name="eligibility_criteria" rows="3"
+                            required placeholder="e.g., Minimum 7.0 CGPA, No active backlogs"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="required_skills" class="form-label">Required Skills</label>
+                        <input type="text" class="form-control" id="required_skills" name="required_skills"
+                            placeholder="e.g., Python, SQL, React" required>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="experience" class="form-label">Experience Required</label>
+                            <input type="number" class="form-control" id="experience" name="experience"
+                                placeholder="e.g., 0-1 Years, Fresher" min="0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="salary_range" class="form-label">Salary Range (in LPA)</label>
+                            <input type="number" class="form-control" id="salary_range" name="salary_range"
+                                placeholder="e.g., 8-10 LPA" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="application_deadline" class="form-label">Application Deadline</label>
+                        <input type="date" class="form-control" id="application_deadline" name="application_deadline"
+                            required>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Submit for Admin Approval</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

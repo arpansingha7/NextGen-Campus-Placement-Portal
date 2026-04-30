@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <h2 class="mb-0 fw-bold text-primary"><i class="bi bi-person-circle me-2"></i>Welcome {{ current_user.student_profile.name }}</h2>
+        <div>
+            <a href="{{ url_for('student_profile') }}" class="btn btn-sm btn-outline-secondary me-2"><i class="bi bi-pencil-square me-1"></i>Edit Profile</a>
+            <a href="{{ url_for('student_applications') }}" class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-clock-history me-1"></i>History</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-danger"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
+        </div>
+    </div>
+
+    <!-- Application Analytics Chart -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 bg-transparent" style="backdrop-filter: blur(16px); border: 1px solid var(--glass-border) !important;">
+                <div class="card-header border-bottom border-secondary bg-transparent pt-3">
+                    <h5 class="mb-0 text-white"><i class="bi bi-pie-chart-fill me-2 text-info"></i>Application Status Distribution</h5>
+                </div>
+                <div class="card-body">
+                    {% set status_counts = {'applied': 0, 'shortlisted': 0, 'waiting': 0, 'selected': 0, 'rejected': 0, 'placed': 0} %}
+                    {% for app in applications %}
+                        {% if app.status in status_counts %}
+                            {% set _ = status_counts.update({app.status: status_counts[app.status] + 1}) %}
+                        {% endif %}
+                    {% endfor %}
+                    <div style="height: 300px; display: flex; justify-content: center;">
+                        <canvas id="studentChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- organisations -->
+    <div class="card mb-5 shadow-sm border-0">
+        <div class="card-header bg-transparent">
+            <h5 class="mb-0 text-primary"><i class="bi bi-buildings me-2"></i>Organizations</h5>
+        </div>
+        <div class="list-group list-group-flush">
+            {% for company in companies %}
+            <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                <span class="fs-6 fw-medium"><i class="bi bi-building text-muted me-2"></i>{{ company.company_name }}</span>
+                <a href="{{ url_for('student_company_details', company_id=company.id) }}"
+                    class="btn btn-sm btn-outline-primary rounded-pill px-4"><i class="bi bi-eye me-1"></i>View Details</a>
+            </div>
+            {% else %}
+            <div class="list-group-item text-muted text-center py-4">No organizations currently available.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- applied drives -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-transparent">
+            <h5 class="mb-0 text-primary"><i class="bi bi-briefcase-fill me-2"></i>Applied Drives</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Sr No.</th>
+                            <th>Drive Name</th>
+                            <th>Company</th>
+                            <th>Date</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                        <tr>
+                            <td>{{ loop.index }}.</td>
+                            <td>{{ app.drive.job_title }}</td>
+                            <td>{{ app.drive.company.company_name }}</td>
+                            <td>{{ app.application_date.strftime('%d/%m/%Y') }}</td>
+                            <td class="text-end">
+                                <a href="{{ url_for('student_drive_details', drive_id=app.drive_id) }}"
+                                    class="btn btn-sm btn-outline-primary rounded-pill px-4"><i class="bi bi-info-circle me-1"></i>View Details</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">You have not applied to any drives yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const ctx = document.getElementById('studentChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Applied', 'Shortlisted', 'Waiting', 'Selected', 'Rejected', 'Placed'],
+            datasets: [{
+                data: [
+                    {{ applications|selectattr('status', 'equalto', 'applied')|list|length }},
+                    {{ applications|selectattr('status', 'equalto', 'shortlisted')|list|length }},
+                    {{ applications|selectattr('status', 'equalto', 'waiting')|list|length }},
+                    {{ applications|selectattr('status', 'equalto', 'selected')|list|length }},
+                    {{ applications|selectattr('status', 'equalto', 'rejected')|list|length }},
+                    {{ applications|selectattr('status', 'equalto', 'placed')|list|length }}
+                ],
+                backgroundColor: [
+                    'rgba(13, 202, 240, 0.8)',  // info (applied)
+                    'rgba(13, 110, 253, 0.8)',  // primary (shortlisted)
+                    'rgba(255, 193, 7, 0.8)',   // warning (waiting)
+                    'rgba(25, 135, 84, 0.8)',   // success (selected)
+                    'rgba(220, 53, 69, 0.8)',   // danger (rejected)
+                    'rgba(32, 201, 151, 0.8)'   // teal (placed)
+                ],
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { color: '#e2e8f0' }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

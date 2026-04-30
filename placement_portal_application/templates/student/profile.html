@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-2 mb-4">
+        <div class="list-group">
+            <a href="{{ url_for('student_dashboard') }}" class="list-group-item list-group-item-action">Dashboard</a>
+            <a href="{{ url_for('student_profile') }}" class="list-group-item list-group-item-action active">My
+                Profile</a>
+            <a href="{{ url_for('student_drives') }}" class="list-group-item list-group-item-action">Placement
+                Drives</a>
+            <a href="{{ url_for('student_applications') }}" class="list-group-item list-group-item-action">My
+                Applications</a>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <h2 class="mb-4">My Profile</h2>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <form action="{{ url_for('student_profile') }}" method="POST" enctype="multipart/form-data">
+
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Email Address (Cannot be changed)</label>
+                                <input type="email" class="form-control" value="{{ current_user.email }}" disabled>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Student ID / Roll No (Cannot be changed)</label>
+                                <input type="text" class="form-control" value="{{ profile.student_roll_id }}" disabled>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ profile.name }}"
+                                    required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="contact" class="form-label">Contact Number</label>
+                                <input type="text" class="form-control" id="contact" name="contact"
+                                    value="{{ profile.contact }}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="education" class="form-label">Education Background</label>
+                                <textarea class="form-control" id="education" name="education"
+                                    rows="3">{{ profile.education or '' }}</textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="skills" class="form-label">Skills</label>
+                                <textarea class="form-control" id="skills" name="skills" rows="3"
+                                    placeholder="e.g., Python, SQL, JavaScript">{{ profile.skills or '' }}</textarea>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="resume" class="form-label">Update Resume (PDF, DOC/DOCX)</label>
+                                <input type="file" class="form-control" id="resume" name="resume"
+                                    accept=".pdf,.doc,.docx">
+                                {% if profile.resume_filename %}
+                                <div class="mt-2 text-muted">
+                                    <small><i class="bi bi-file-earmark-pdf"></i> Current Resume:
+                                        <a href="{{ url_for('download_file', filename=profile.resume_filename) }}"
+                                            target="_blank">View/Download uploaded file</a>
+                                    </small>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
